@@ -21,8 +21,11 @@ import {
   OnChangeModel,
   IDocCategoryFormState,
 } from "../../common/types/Form.types";
+import { IAccount } from "../../store/models/account.interface";
 
 const ProductForm: React.FC = () => {
+  const account: IAccount = useSelector((state: IStateType) => state.account);
+
   const dispatch: Dispatch<any> = useDispatch();
   const doccategories: IDocCategoryState | null = useSelector(
     (state: IStateType) => state.docCategories
@@ -70,7 +73,7 @@ const ProductForm: React.FC = () => {
           name: formState.name.value,
           description: formState.description.value,
         };
-        addNewDocCat(boxInfo).then((status) => {
+        addNewDocCat(boxInfo, account.auth).then((status) => {
           dispatch(
             saveFn({
               ...doccategory,
@@ -92,7 +95,7 @@ const ProductForm: React.FC = () => {
           name: formState.name.value,
           description: formState.description.value,
         };
-        updateDocCat(boxInfoUpt).then((status) => {
+        updateDocCat(boxInfoUpt, account.auth).then((status) => {
           dispatch(
             saveFn({
               ...doccategory,
@@ -129,29 +132,27 @@ const ProductForm: React.FC = () => {
     <Fragment>
       <div className="col-xl-7 col-lg-7">
         <div className="card shadow mb-4">
-          <div className="card-header py-3">
-            <h6 className="m-0 font-weight-bold text-green">
+          <div className="card-header py-1">
+            <h6 className="m-0 font-weight-bold text-white">
               Document {isCreate ? "create" : "edit"}
             </h6>
           </div>
           <div className="card-body">
             <form onSubmit={saveUser}>
-              <div className="form-row">
-                <div className="form-group col-md-6">
-                  <TextInput
-                    id="input_email"
-                    value={formState.name.value}
-                    field="name"
-                    onChange={hasFormValueChanged}
-                    required={true}
-                    maxLength={100}
-                    label="Name"
-                    placeholder="Name"
-                    customError={formState.name.error}
-                  />
-                </div>
+              <div className="form-group font-14">
+                <TextInput
+                  id="input_email"
+                  value={formState.name.value}
+                  field="name"
+                  onChange={hasFormValueChanged}
+                  required={true}
+                  maxLength={100}
+                  label="Name"
+                  placeholder="Name"
+                  customError={formState.name.error}
+                />
               </div>
-              <div className="form-group">
+              <div className="form-group font-14">
                 <TextInput
                   id="input_description"
                   field="description"
@@ -165,12 +166,12 @@ const ProductForm: React.FC = () => {
                 />
               </div>
 
-              <button className="btn btn-danger" onClick={() => cancelForm()}>
+              <button className="btn btn-danger font-14" onClick={() => cancelForm()}>
                 Cancel
               </button>
               <button
                 type="submit"
-                className={`btn btn-success left-margin ${getDisabledClass()}`}
+                className={`btn btn-success left-margin font-14 ${getDisabledClass()}`}
               >
                 Save
               </button>

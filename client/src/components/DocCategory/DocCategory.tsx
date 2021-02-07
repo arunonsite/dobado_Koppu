@@ -4,7 +4,6 @@ import ProductForm from "./DocCategoryForm";
 import TopCard from "../../common/components/TopCard";
 import "./DocCategory.css";
 import { useDispatch, useSelector } from "react-redux";
-import { updateCurrentPath } from "../../store/actions/root.actions";
 import {
   IDocCategoryState,
   IStateType,
@@ -12,10 +11,8 @@ import {
 } from "../../store/models/root.interface";
 import Popup from "reactjs-popup";
 import {
-  removeDocCategory,
   clearSelectedDocCategory,
   setModificationState,
-  changeDocCategoryAmount,
   loadListOfDocCategory,
   changeSelectedDocCategory,
 } from "../../store/actions/doccategory.action";
@@ -26,8 +23,11 @@ import {
   IDocCategoryList,
 } from "../../store/models/doccategory.interface";
 import { getDocCategoryList } from "../../services/index";
+import { IAccount } from "../../store/models/account.interface";
 
 const Products: React.FC = () => {
+  const account: IAccount = useSelector((state: IStateType) => state.account);
+
   const dispatch: Dispatch<any> = useDispatch();
   const doccategories: IDocCategoryState = useSelector(
     (state: IStateType) => state.docCategories
@@ -43,7 +43,7 @@ const Products: React.FC = () => {
   const [popup, setPopup] = useState(false);
 
   useEffect(() => {
-    getDocCategoryList().then((items: IDocCategoryList) => {
+    getDocCategoryList(account.auth).then((items: IDocCategoryList) => {
       dispatch(loadListOfDocCategory(items));
     });
   }, [path.area, dispatch]);
@@ -61,8 +61,8 @@ const Products: React.FC = () => {
 
   return (
     <Fragment>
-      <h1 className="h3 mb-2 text-gray-800">Categories</h1>
-      <p className="mb-4">Document Category here</p>
+      <h1 className="h5 mb-2 font-bold">Categories</h1>
+      <p className="mb-4 font-14">Document Category here</p>
       <div className="row">
         <TopCard
           title="Categories COUNT"
@@ -75,11 +75,11 @@ const Products: React.FC = () => {
       <div className="row">
         <div className="col-xl-12 col-lg-12">
           <div className="card shadow mb-4">
-            <div className="card-header py-3">
-              <h6 className="m-0 font-weight-bold text-green">Document List</h6>
+            <div className="card-header py-1">
+              <h6 className="m-0 font-weight-bold text-white font-12">Document List</h6>
               <div className="header-buttons">
                 <button
-                  className="btn btn-success btn-green"
+                  className="btn btn-border"
                   onClick={() =>
                     dispatch(
                       setModificationState(DocCategoryModificationStatus.Create)
@@ -89,7 +89,7 @@ const Products: React.FC = () => {
                   <i className="fas fa fa-plus"></i>
                 </button>
                 <button
-                  className="btn btn-success btn-blue"
+                  className="btn btn-border"
                   onClick={() =>
                     dispatch(
                       setModificationState(DocCategoryModificationStatus.Edit)
@@ -98,12 +98,12 @@ const Products: React.FC = () => {
                 >
                   <i className="fas fa fa-pen"></i>
                 </button>
-                <button
-                  className="btn btn-success btn-red"
+                {/*  <button
+                  className="btn btn-border  btn-red-color"
                   onClick={() => onProductRemove()}
                 >
                   <i className="fas fa fa-times"></i>
-                </button>
+                </button> */}
               </div>
             </div>
             {doccategories.modificationState ===

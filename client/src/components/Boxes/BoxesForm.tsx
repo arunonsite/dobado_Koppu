@@ -15,8 +15,11 @@ import { addNewBox, updateBox } from "../../services/index";
 
 import { OnChangeModel, IBoxFormState } from "../../common/types/Form.types";
 import { BoxModificationStatus, IBox } from "../../store/models/box.interface";
+import { IAccount } from "../../store/models/account.interface";
 
 const BoxForm: React.FC = () => {
+  const account: IAccount = useSelector((state: IStateType) => state.account);
+
   const dispatch: Dispatch<any> = useDispatch();
   const boxes: IBoxState | null = useSelector(
     (state: IStateType) => state.boxes
@@ -66,7 +69,7 @@ const BoxForm: React.FC = () => {
           description: formState.description.value,
           racks: formState.racks.value,
         };
-        addNewBox(boxInfo).then((status) => {
+        addNewBox(boxInfo, account.auth).then((status) => {
           dispatch(
             saveFn({
               ...box,
@@ -89,7 +92,7 @@ const BoxForm: React.FC = () => {
           description: formState.description.value,
           racks: formState.racks.value,
         };
-        updateBox(boxInfoUpt).then((status) => {
+        updateBox(boxInfoUpt, account.auth).then((status) => {
           dispatch(
             saveFn({
               ...box,
@@ -123,31 +126,29 @@ const BoxForm: React.FC = () => {
 
   return (
     <Fragment>
-      <div className="col-xl-12 col-lg-12">
+      <div className="col-xl-7 col-lg-7">
         <div className="card shadow mb-4">
-          <div className="card-header py-3">
-            <h6 className="m-0 font-weight-bold text-green">
+          <div className="card-header py-1">
+            <h6 className="m-0 font-weight-bold text-white">
               Box {isCreate ? "create" : "edit"}
             </h6>
           </div>
           <div className="card-body">
             <form onSubmit={saveUser}>
-              <div className="form-row">
-                <div className="form-group col-md-6">
-                  <TextInput
-                    id="input_email"
-                    value={formState.name.value}
-                    field="name"
-                    onChange={hasFormValueChanged}
-                    required={true}
-                    maxLength={20}
-                    label="Name"
-                    placeholder="Name"
-                    customError={formState.name.error}
-                  />
-                </div>
+              <div className="form-group font-14">
+                <TextInput
+                  id="input_email"
+                  value={formState.name.value}
+                  field="name"
+                  onChange={hasFormValueChanged}
+                  required={true}
+                  maxLength={20}
+                  label="Name"
+                  placeholder="Name"
+                  customError={formState.name.error}
+                />
               </div>
-              <div className="form-group">
+              <div className="form-group font-14">
                 <TextInput
                   id="input_description"
                   field="description"
@@ -161,7 +162,7 @@ const BoxForm: React.FC = () => {
                 />
               </div>
 
-              <div className="form-group">
+              <div className="form-group font-14">
                 <NumberInput
                   id="input_ract"
                   field="racks"
@@ -171,12 +172,12 @@ const BoxForm: React.FC = () => {
                   customError={formState.racks.error}
                 />
               </div>
-              <button className="btn btn-danger" onClick={() => cancelForm()}>
+              <button className="btn btn-danger font-14" onClick={() => cancelForm()}>
                 Cancel
               </button>
               <button
                 type="submit"
-                className={`btn btn-success left-margin ${getDisabledClass()}`}
+                className={`btn btn-success left-margin font-14 ${getDisabledClass()}`}
               >
                 Save
               </button>

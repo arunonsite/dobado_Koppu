@@ -21,6 +21,8 @@ import { AuthGuard } from '../../node_modules/@nestjs/passport';
 import { ProfileDto } from './dto/profile.dto';
 import { SettingsDto } from './dto/settings.dto';
 import { UpdateGalleryDto } from './dto/update-gallery.dto';
+import { UsersDto } from './dto/users.dto';
+
 
 @Controller('users')
 @UseGuards(AuthGuard('jwt'))
@@ -32,13 +34,38 @@ export class UsersController {
   @Get('user/:email')
   @UseGuards(RolesGuard)
   @Roles('User')
-  async findById(@Param() params): Promise<IResponse>{
-    console.log("findById--");
+  async findById(@Param() params): Promise<IResponse>{ 
     try {
       var user =  await this.usersService.findByEmail(params.email);
       return new ResponseSuccess("COMMON.SUCCESS", new UserDto(user));
     } catch(error){
       return new ResponseError("COMMON.ERROR.GENERIC_ERROR", error);
+    }
+  }
+
+  
+
+
+  @Get('list')
+  async allUsers(): Promise<IResponse>{ 
+    try {
+      var users =  await this.usersService.findAll();
+    //  console.log("users---", users);
+      return new ResponseSuccess("COMMON.SUCCESS", new UsersDto({users : users}));
+    } catch(error){
+      return new ResponseError("COMMON.ERROR.GENERIC_ERROR", error);
+    }
+  }
+
+  @Post('profile/updateStatus')
+  async updateStatus(@Body() profileDto: ProfileDto): Promise<IResponse> {
+    console
+    .log("profileDto", profileDto);
+    try {
+      var user =  await this.usersService.updateProfile(profileDto);
+      return new ResponseSuccess("PROFILE.UPDATE_SUCCESS", new UserDto(user));
+    } catch(error){
+      return new ResponseError("PROFILE.UPDATE_ERROR", error);
     }
   }
   

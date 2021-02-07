@@ -43,8 +43,11 @@ import {
 } from "../../common/types/Form.types";
 import SelectInput from "../../common/components/Select";
 import Checkbox from "../../common/components/Checkbox";
+import { IAccount } from "../../store/models/account.interface";
 
 const ProductForm: React.FC = () => {
+  const account: IAccount = useSelector((state: IStateType) => state.account);
+
   const dispatch: Dispatch<any> = useDispatch();
   const products: IProductState | null = useSelector(
     (state: IStateType) => state.products
@@ -145,10 +148,10 @@ const ProductForm: React.FC = () => {
         });
       }
     }
-    checkPossibleToGenerateQR({
+    /*  checkPossibleToGenerateQR({
       ...formState,
       [model.field]: { error: model.error, value: model.value },
-    });
+    }); */
   }
   function hasRacksValueChanged(model: OnChangeModel): void {
     const newObj: any = boxRacks;
@@ -200,14 +203,14 @@ const ProductForm: React.FC = () => {
           category: formState.category.value,
           qr_code: formState.qr_code.value,
         };
-        addNewDoc(boxInfo).then((status) => {
-          getDocumentList().then((items: IProductList) => {
+        addNewDoc(boxInfo, account.auth).then((status) => {
+          getDocumentList(account.auth).then((items: IProductList) => {
             dispatch(loadListOfProduct(items));
           });
           dispatch(
             addNotification(
               "New Docuemnt added",
-              `Box ${formState.name.value} added by you`
+              `Docuemnt ${formState.name.value} added by you`
             )
           );
           dispatch(clearSelectedProduct());
@@ -251,7 +254,6 @@ const ProductForm: React.FC = () => {
     return isError ? "disabled" : "";
   }
   function isFormInvalid(): boolean {
-    console.log("formState---->>>", formState);
     let formIsValid = true;
     if (formState.name.value === "") {
       formIsValid = false;
@@ -353,15 +355,15 @@ const ProductForm: React.FC = () => {
     <Fragment>
       <div className="col-xl-7 col-lg-7">
         <div className="card shadow mb-4">
-          <div className="card-header py-3">
-            <h6 className="m-0 font-weight-bold text-green">
+          <div className="card-header py-1">
+            <h6 className="m-0 font-weight-bold text-white">
               Document {isCreate ? "create" : "edit"}
             </h6>
           </div>
           <div className="card-body">
             <form onSubmit={saveUser}>
               <div className="form-row 14">
-                <div className="form-group col-md-6">
+                <div className="form-group col-md-6 font-14">
                   <TextInput
                     id="input_email"
                     value={formState.name.value}
@@ -379,7 +381,7 @@ const ProductForm: React.FC = () => {
                     </div>
                   ) : null}
                 </div>
-                <div className="form-group col-md-6">
+                <div className="form-group col-md-6 font-14">
                   <SelectInput
                     id="input_category"
                     field="category"
@@ -394,7 +396,7 @@ const ProductForm: React.FC = () => {
                 </div>
               </div>
               <div className="form-row 13">
-                <div className="form-group col-md-12">
+                <div className="form-group col-md-12 font-14">
                   <TextInput
                     id="input_description"
                     field="description"
@@ -409,9 +411,9 @@ const ProductForm: React.FC = () => {
                 </div>
               </div>
               <div className="form-row 12">
-                <div className="form-group col-md-6">
+                <div className="form-group col-md-6 font-14">
                   <div className="form-row">
-                    <div className="form-group col-md-12">
+                    <div className="form-group col-md-12 font-14">
                       <SelectInput
                         id="input_category"
                         field="box"
@@ -434,11 +436,11 @@ const ProductForm: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                <div className="form-group col-md-6">
+                <div className="form-group col-md-6 font-14">
                   <div className="form-row">
                     <div
                       className="col-xs-10"
-                      style={{ paddingLeft: "41px" }}
+                      style={{ paddingLeft: "20px" }}
                       key={"non_perceptual_space"}
                     >
                       {" "}
@@ -452,12 +454,12 @@ const ProductForm: React.FC = () => {
               </div>
 
               <div className="form-row">
-                <div className="form-group col-md-6">
+                <div className="form-group col-md-6 font-14">
                   Type of Space
                   <div className="form-row">
                     <div
                       className="col-xs-3"
-                      style={{ paddingLeft: "41px" }}
+                      style={{ paddingLeft: "20px" }}
                       key={"non_perceptual_space"}
                     >
                       {" "}
@@ -477,8 +479,8 @@ const ProductForm: React.FC = () => {
                       />
                     </div>
                     <div
-                      className="col-xs-3"
-                      style={{ paddingLeft: "41px" }}
+                      className="col-xs-3 font-14"
+                      style={{ paddingLeft: "20px" }}
                       key={"perceptual_space"}
                     >
                       {" "}
@@ -498,13 +500,10 @@ const ProductForm: React.FC = () => {
                   </div>
                 </div>
               </div>
-              <button className="btn btn-danger" onClick={() => cancelForm()}>
+              <button className="btn btn-danger font-14" onClick={() => cancelForm()}>
                 Cancel
               </button>
-              <button
-                type="submit"
-                className={`btn btn-success left-margin ${getDisabledClass()}`}
-              >
+              <button type="submit" className={`btn btn-success left-margin font-14`}>
                 Save
               </button>
             </form>

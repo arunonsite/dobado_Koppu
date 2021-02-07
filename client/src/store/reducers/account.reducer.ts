@@ -3,13 +3,15 @@ import { IAccount } from "../models/account.interface";
 import { LOG_IN, LOG_OUT } from "../actions/account.actions";
 
 const initialState: IAccount = {
-    email: ""  
+    email: "" ,
+    roles:[] ,
+    auth:{}
 };
 
-function accountReducer(state: IAccount = initialState, action: IActionBase): IAccount {
+function accountReducer(state: IAccount = initialState, action: IActionBase): IAccount { 
     switch (action.type) {
         case LOG_IN: {
-            return { ...state, email: (action.email)};
+            return { ...state, ...action.loginData.user, auth : {...action.loginData.token}};
         }
         case LOG_OUT: {
             return { ...state, email: ""};

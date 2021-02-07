@@ -26,6 +26,9 @@ export class AuthService {
     if(!userFromDb) throw new HttpException('LOGIN.USER_NOT_FOUND', HttpStatus.NOT_FOUND);
     if(!userFromDb.auth.email.valid) throw new HttpException('LOGIN.EMAIL_NOT_VERIFIED', HttpStatus.FORBIDDEN);
 
+    console.log("userFromDb.roles[0]--", userFromDb.roles[0]);
+    if(userFromDb.roles[0] === "Deactivated") throw new HttpException('LOGIN.LOGIN_NOT_ACTIVATED', HttpStatus.FORBIDDEN);
+
     var isValidPass = await bcrypt.compare(password, userFromDb.password);
 
     if(isValidPass){
@@ -53,9 +56,7 @@ export class AuthService {
           timestamp: new Date()
         },
         {new: true, upsert: true}
-      );
-
-      console.log("emailVerificationModel----", emailVerificationModel);
+      ); 
       return true;
     }
   }
@@ -126,9 +127,10 @@ export class AuthService {
     
 
     if(model && model.emailToken){
+
         let transporter = nodemailer.createTransport({
             host: config.mail.host,
-          //  port: config.mail.port,
+            port: config.mail.port,
             secure: config.mail.secure, // true for 465, false for other ports
             auth: {
                 user: config.mail.user,

@@ -6,6 +6,7 @@ export class UserDto {
     this.name = object.name;
     this.surname = object.surname;
     this.email = object.email;
+    this.roles = object.roles;
     this.phone = object.phone;
     this.birthdaydate = object.birthdaydate;
     this.settings = new SettingsDto(object.settings);
@@ -17,16 +18,20 @@ export class UserDto {
       object.photos.gallery.forEach(photo => {
         this.photos.gallery.push(new PhotoDto(photo));
       });
-    }
+    };
+    this.approved = object.approved;
   };
   readonly name: string;
   readonly surname: string;
   readonly email: string;
+  readonly roles: string;
   readonly phone: string;
   readonly birthdaydate: Date;
+  readonly approved: boolean;
   settings: SettingsDto
   photos: {
     profilePic: PhotoDto;
     gallery: PhotoDto[];
   };
+  
 }
